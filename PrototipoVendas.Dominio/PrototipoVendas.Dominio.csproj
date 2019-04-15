@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RootNamespace>PrototipoVendas.Dominio</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Entidades\ObjetosDeValor\**" />
+    <EmbeddedResource Remove="Entidades\ObjetosDeValor\**" />
+    <None Remove="Entidades\ObjetosDeValor\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Enums\" />
+    <Folder Include="Interfaces\Validacao\" />
+    <Folder Include="Validacao\" />
+  </ItemGroup>
+
+</Project>

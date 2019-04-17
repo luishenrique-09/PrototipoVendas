@@ -1,0 +1,80 @@
+﻿@model ProdutoViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<h4>Produto</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Nome" class="control-label"></label>
+                <input asp-for="Nome" class="form-control" />
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descricao" class="control-label"></label>
+                <input asp-for="Descricao" class="form-control" />
+                <span asp-validation-for="Descricao" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Preco" class="control-label"></label>
+                <input asp-for="Preco" class="form-control" />
+                <span asp-validation-for="Preco" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageUpload" class="control-label"></label>
+                <input type="file" id="file" asp-for="ImageUpload" class="form-control" />
+                <span asp-validation-for="ImageUpload" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" id="btnCreate" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+	@*<script type="text/javascript">
+		$(document).ready(function () {
+			$('#btnCreate').on('click', function () {
+				var fd = new FormData();
+				var files = $('#file')[0].files[0];
+
+				console.log(files);
+
+				fd.append('Foto', files);
+				fd.append('Nome', 'Teste');
+				fd.append('Descricao', 'Teste');
+				fd.append('Preco', '20');
+
+				$.ajax({
+					url: 'Create',
+					type: 'post',
+					data: fd,
+					contentType: false,
+					processData: false,
+					success: function (response) {
+						if (response != 0) {
+							$("#img").attr("src", response);
+							$(".preview img").show(); // Display image element
+						} else {
+							alert('file not uploaded');
+						}
+					},
+				});
+			});
+		});
+	</script>*@
+}

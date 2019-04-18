@@ -18,8 +18,6 @@ namespace PrototipoVendas.Dominio.Entidades
         public decimal Preco { get; set; }
 
         public byte[] Foto { get; set; }
-        public string NomeFoto { get; set; }
-        public string ExtensaoFoto { get; set; }
         
         public Produto() { }
     }

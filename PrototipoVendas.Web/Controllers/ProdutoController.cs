@@ -60,14 +60,6 @@ namespace PrototipoVendas.Web.Controllers
             return string.Format("data:image/png;base64,{0}", Convert.ToBase64String(data));
         }
 
-        [HttpGet]
-        public FileStreamResult VerImagem(int id)
-        {
-            var produto = _context.Produtos.FirstOrDefault(p => p.Id == id);
-            MemoryStream ms = new MemoryStream(produto.Foto);
-            return new FileStreamResult(ms, produto.ExtensaoFoto);
-        }
-
         // GET: Produtoes/Create
         public IActionResult Create()
         {
@@ -93,8 +85,6 @@ namespace PrototipoVendas.Web.Controllers
                 model.ImageUpload.OpenReadStream().CopyTo(ms);
 
                 produto.Foto = ms.ToArray();
-                produto.NomeFoto = model.ImageUpload.FileName;
-                produto.ExtensaoFoto = model.ImageUpload.ContentType;
 
                 _context.Add(produto);
                 await _context.SaveChangesAsync();
@@ -134,9 +124,10 @@ namespace PrototipoVendas.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,Preco,Foto")] Produto produto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,Preco")] ProdutoViewModel model
+            )
         {
-            if (id != produto.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
@@ -145,12 +136,17 @@ namespace PrototipoVendas.Web.Controllers
             {
                 try
                 {
+                    var produto = _context.Produtos.FirstOrDefault(x => x.Id == model.Id);
+                    produto.Nome = model.Nome;
+                    produto.Descricao = model.Descricao;
+                    produto.Preco = model.Preco;
+
                     _context.Update(produto);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProdutoExists(produto.Id))
+                    if (!ProdutoExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -161,7 +157,7 @@ namespace PrototipoVendas.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(produto);
+            return View(model);
         }
 
         // GET: Produtoes/Delete/5

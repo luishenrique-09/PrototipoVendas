@@ -1,6 +1,5 @@
 ﻿namespace PrototipoVendas.Web.Controllers
 {
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
@@ -8,7 +7,7 @@
     using PrototipoVendas.Dominio.Entidades;
     using PrototipoVendas.Infra.Data.Contexto;
 
-    public class UsuarioController : Controller
+    public class UsuarioController : BaseController
     {
         private readonly VendasContexto _context;
 
@@ -16,14 +15,15 @@
         {
             _context = context;
         }
-
-        // GET: Usuarios
+        
         public async Task<IActionResult> Index()
         {
+            if (UsuarioLogado.Usuario != null)
+                return RedirectToAction("Index", "Loja");
+
             return View(await _context.Usuarios.ToListAsync());
         }
-
-        // GET: Usuarios/Details/5
+        
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

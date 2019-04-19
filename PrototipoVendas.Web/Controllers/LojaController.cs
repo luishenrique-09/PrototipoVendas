@@ -1,13 +1,17 @@
 ﻿namespace PrototipoVendas.Web.Controllers
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using PrototipoVendas.Dominio.Entidades;
     using PrototipoVendas.Infra.Data.Contexto;
+    using PrototipoVendas.Web.Models;
 
+    [Authorize]
     public class LojaController : Controller
     {
         private readonly VendasContexto _context;
@@ -16,11 +20,24 @@
         {
             _context = context;
         }
-
-        // GET: Loja
+        
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Produtos.ToListAsync());
+            var listaProdutos = new List<ProdutoViewModel>();
+            var produtosBD = await _context.Produtos.ToListAsync();
+            foreach (var prod in produtosBD)
+            {
+                listaProdutos.Add(new ProdutoViewModel
+                {
+                    Id = prod.Id,
+                    Nome = prod.Nome,
+                    Descricao = prod.Descricao,
+                    Preco = prod.Preco,
+                    Foto = ToBase64ImageString(prod.Foto)
+                });
+            }
+
+            return View(listaProdutos);
         }
 
         // GET: Loja/Details/5
@@ -38,129 +55,58 @@
                 return NotFound();
             }
 
-            return View(produto);
+            var retorno = new ProdutoViewModel
+            {
+                Id = produto.Id,
+                Nome = produto.Nome,
+                Descricao = produto.Descricao,
+                Preco = produto.Preco,
+                Foto = ToBase64ImageString(produto.Foto)
+            };
+
+            return View(retorno);
         }
         
-        public IActionResult AdicionarAoCarrinho(int idProduto)
+        public IActionResult AdicionarAoCarrinho(int idProduto, int quantidade = 1, string page = "Index")
         {
-            var itensCarrinho = HttpContext.Session.Get<List<Produto>>("Carrinho");
+            var itensCarrinho = HttpContext.Session.Get<List<CarrinhoViewModel>>("Carrinho");
 
             if (itensCarrinho == null)
-                itensCarrinho = new List<Produto>();
+                itensCarrinho = new List<CarrinhoViewModel>();
 
-            var produto = _context.Produtos.FirstOrDefault(x => x.Id == idProduto);
-            itensCarrinho.Add(produto);
+            var produto = ObterProduto(idProduto);
+            itensCarrinho.Add(new CarrinhoViewModel { Produto = produto, Quantidade = quantidade });
 
-            HttpContext.Session.Set<List<Produto>>("Carrinho", itensCarrinho);
+            HttpContext.Session.Set<List<CarrinhoViewModel>>("Carrinho", itensCarrinho);
 
-            return RedirectToAction("Details", new { id = produto.Id });
+            return RedirectToAction(page, new { id = produto.Id });
         }
 
-        // GET: Loja/Create
-        public IActionResult Create()
+        private ProdutoViewModel ObterProduto(int idProduto)
         {
-            return View();
+            var produtoBD = _context.Produtos.FirstOrDefault(x => x.Id == idProduto);
+            var produtoVM = new ProdutoViewModel
+            {
+                Id = produtoBD.Id,
+                Nome = produtoBD.Nome,
+                Descricao = produtoBD.Descricao,
+                Preco = produtoBD.Preco,
+                Foto = ToBase64ImageString(produtoBD.Foto)
+            };
+
+            return produtoVM;
         }
 
-        // POST: Loja/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Descricao,Preco,Foto")] Produto produto)
+        private string ToBase64ImageString(byte[] data)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(produto);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(produto);
+            return string.Format("data:image/png;base64,{0}", Convert.ToBase64String(data));
         }
-
-        // GET: Loja/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        
+        public IActionResult Carrinho()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var itensCarrinho = HttpContext.Session.Get<List<CarrinhoViewModel>>("Carrinho");
 
-            var produto = await _context.Produtos.FindAsync(id);
-            if (produto == null)
-            {
-                return NotFound();
-            }
-            return View(produto);
-        }
-
-        // POST: Loja/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,Preco,Foto")] Produto produto)
-        {
-            if (id != produto.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(produto);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProdutoExists(produto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(produto);
-        }
-
-        // GET: Loja/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var produto = await _context.Produtos
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (produto == null)
-            {
-                return NotFound();
-            }
-
-            return View(produto);
-        }
-
-        // POST: Loja/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var produto = await _context.Produtos.FindAsync(id);
-            _context.Produtos.Remove(produto);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProdutoExists(int id)
-        {
-            return _context.Produtos.Any(e => e.Id == id);
+            return View(itensCarrinho);
         }
     }
 }

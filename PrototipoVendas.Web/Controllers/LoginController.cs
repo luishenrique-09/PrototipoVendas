@@ -39,6 +39,13 @@
             return View(usuario);
         }
 
+        public IActionResult LogOut()
+        {
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
+
         private void CriaSessoesUsuario(Usuario usuario)
         {
             BaseUsuarioLogado usuarioLogado = new BaseUsuarioLogado()

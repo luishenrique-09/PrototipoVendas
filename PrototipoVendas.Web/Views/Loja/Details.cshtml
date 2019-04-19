@@ -1,43 +1,47 @@
-﻿@model PrototipoVendas.Dominio.Entidades.Produto
+﻿@model ProdutoViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "ProtótipoVendas - Detalhe do produto";
 }
 
-<h2>Details</h2>
+<br />
+<br />
+<hr />
 
-<div>
-    <h4>Produto</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Descricao)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Descricao)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Preco)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Preco)
-        </dd>
-        @*<dt>
-            @Html.DisplayNameFor(model => model.Foto)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Foto)
-        </dd>*@
-    </dl>
+<div class="row">
+    <div class="col-md-6">
+        <img src="@Model.Foto" style="width: 100%; height: 500px"/>
+    </div>
+    <div class="col-md-6">
+        <h3>@Model.Nome</h3>
+        <hr />
+        <h6>@Model.Descricao</h6>
+        <div style="border: 2px dashed #ddd">
+            <p style="font-size: 26px; color: red; margin: 5px">R$ @Model.Preco</p>
+        </div>
+        <br />
+        <div class="input-group col-md-6">
+            <input type="number" class="form-control" id="qtd" value="1" onmouseup="alterarQtdCarrinho()" />
+            <a class="btn btn-sm input-group-addon" id="btnCarrinho" onclick="await alterarQtdCarrinho()" style="background-color: green; color: white" asp-action="AdicionarAoCarrinho" asp-route-idProduto="@Model.Id" asp-route-quantidade="1"  asp-route-page="Details">
+                <span class="glyphicon glyphicon-shopping-cart"></span> Adicionar ao Carrinho
+            </a>
+        </div>
+    </div>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
     <a asp-action="AdicionarAoCarrinho" asp-route-idProduto="@Model.Id">Adicionar ao Carrinho</a>
 </div>
+
+
+<script type="text/javascript">
+    async function alterarQtdCarrinho() {
+        var href = $("#btnCarrinho").attr('href');
+        var dados = href.split('?')[1];
+        var parametros = dados.split('&');
+        var novoValor = $("#qtd").val();
+
+        var novoLink = `${href.split('?')[0]}?${parametros[0]}&quantidade=${novoValor}&${parametros[2]}`;
+        $("#btnCarrinho").attr('href', novoLink);
+    }
+</script>

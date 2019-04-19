@@ -5,7 +5,7 @@
 
 @{
     BaseController.BaseUsuarioLogado usuarioLogado = null;
-    List<Produto> itensCarrinho = new List<Produto>();
+    List<CarrinhoViewModel> itensCarrinho = new List<CarrinhoViewModel>();
 
     if (Context.Session.GetString("UsuarioLogado") != null)
     {
@@ -14,7 +14,7 @@
 
     if (Context.Session.GetString("Carrinho") != null)
     {
-        itensCarrinho = JsonConvert.DeserializeObject<List<Produto>>(Context.Session.GetString("Carrinho"));
+        itensCarrinho = JsonConvert.DeserializeObject<List<CarrinhoViewModel>>(Context.Session.GetString("Carrinho"));
     }
 }
 
@@ -55,6 +55,10 @@
                         <li><a asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a></li>
                         <li><a asp-area="" asp-controller="Produto" asp-action="Index">Produtos</a></li>
                     }
+                    else
+                    {
+                        <li><a asp-area="" asp-controller="Loja" asp-action="Index">Produtos</a></li>
+                    }
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     @if (usuarioLogado == null)
@@ -64,7 +68,7 @@
                     else
                     {
                         <li>
-                            <a asp-controller="Login" asp-action="Logout">
+                            <a asp-controller="Loja" asp-action="Carrinho">
                                 <span class="glyphicon glyphicon-shopping-cart"></span>
                                 <span class="badge badge-primary">@itensCarrinho.Count</span>
                             </a>

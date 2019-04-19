@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using PrototipoVendas.Dominio.Entidades;
-using PrototipoVendas.Infra.Data.Contexto;
-using PrototipoVendas.Web.Models;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace PrototipoVendas.Web.Controllers
+﻿namespace PrototipoVendas.Web.Controllers
 {
-    public class ProdutoController : Controller
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using PrototipoVendas.Dominio.Entidades;
+    using PrototipoVendas.Infra.Data.Contexto;
+    using PrototipoVendas.Web.Models;
+
+    public class ProdutoController : BaseController
     {
         private readonly VendasContexto _context;
 
@@ -21,14 +18,15 @@ namespace PrototipoVendas.Web.Controllers
         {
             _context = context;
         }
-
-        // GET: Produtoes
+        
         public async Task<IActionResult> Index()
         {
+            if (UsuarioLogado.Usuario != null)
+                return RedirectToAction("Index", "Loja");
+
             return View(await _context.Produtos.ToListAsync());
         }
 
-        // GET: Produtoes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

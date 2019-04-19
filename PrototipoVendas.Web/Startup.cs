@@ -1,5 +1,6 @@
 ﻿namespace PrototipoVendas.Web
 {
+    using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -8,6 +9,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using PrototipoVendas.Infra.Data.Contexto;
+    using System;
 
     public class Startup
     {
@@ -27,6 +29,21 @@
             services.AddDbContext<VendasContexto>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("Prototipo")));
 
+            //Autenticação
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(o =>
+                {
+                    o.LoginPath = new PathString("/Login/Login");
+                    o.AccessDeniedPath = new PathString("/Login/NaoAutorizado");
+                });
+
+            services.AddSession(o =>
+            {
+                o.IdleTimeout = TimeSpan.FromMinutes(30);
+                o.Cookie.HttpOnly = true;
+                o.Cookie.IsEssential = true;
+            });
+            
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;
@@ -48,8 +65,11 @@
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseAuthentication();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {

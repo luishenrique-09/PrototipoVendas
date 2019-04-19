@@ -1,4 +1,24 @@
-﻿<!DOCTYPE html>
+﻿@using PrototipoVendas.Web.Controllers;
+@using PrototipoVendas.Dominio.Entidades;
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json;
+
+@{
+    BaseController.BaseUsuarioLogado usuarioLogado = null;
+    List<Produto> itensCarrinho = new List<Produto>();
+
+    if (Context.Session.GetString("UsuarioLogado") != null)
+    {
+        usuarioLogado = JsonConvert.DeserializeObject<BaseController.BaseUsuarioLogado>(Context.Session.GetString("UsuarioLogado"));
+    }
+
+    if (Context.Session.GetString("Carrinho") != null)
+    {
+        itensCarrinho = JsonConvert.DeserializeObject<List<Produto>>(Context.Session.GetString("Carrinho"));
+    }
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -30,11 +50,33 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a></li>
-                    <li><a asp-area="" asp-controller="Produto" asp-action="Index">Produtos</a></li>
-				</ul>
-				<ul class="nav navbar-nav navbar-right">
-                    <li><a asp-area="" asp-controller="Login" asp-action="Login">Login</a></li>
+                    @if (usuarioLogado == null)
+                    {
+                        <li><a asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a></li>
+                        <li><a asp-area="" asp-controller="Produto" asp-action="Index">Produtos</a></li>
+                    }
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    @if (usuarioLogado == null)
+                    {
+                        <li><a asp-area="" asp-controller="Login" asp-action="Login">Login</a></li>
+                    }
+                    else
+                    {
+                        <li>
+                            <a asp-controller="Login" asp-action="Logout">
+                                <span class="glyphicon glyphicon-shopping-cart"></span>
+                                <span class="badge badge-primary">@itensCarrinho.Count</span>
+                            </a>
+                        </li>
+                        <li> <a href="#">Olá, @usuarioLogado.Usuario.Nome</a></li>
+                        <li>
+                            <a asp-controller="Login" asp-action="Logout">
+                                <span class="glyphicon glyphicon-log-out"></span> Sair
+                            </a>
+                        </li>
+
+                    }
                 </ul>
             </div>
         </div>

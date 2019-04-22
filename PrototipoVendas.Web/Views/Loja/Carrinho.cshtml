@@ -5,7 +5,7 @@
 
     @foreach(var item in Model)
     {
-        total += item.Quantidade * item.Produto.Preco;
+        total += item.Quantidade * Convert.ToDecimal(item.Produto.Preco);
     }
 }
 
@@ -19,8 +19,8 @@
     <div class="col-md-8">
         <div class="row">
             <div class="col-md-6">PRODUTO</div>
-            <div class="col-md-2">PREÇO</div>
-            <div class="col-md-3">QUANTIDADE</div>
+            <div class="col-md-3">PREÇO</div>
+            <div class="col-md-2">QUANTIDADE</div>
             <div class="col-md-1">-</div>
         </div>
         <hr />
@@ -56,6 +56,13 @@
         <div class="row">
             <div class="col-md-6">Total</div>
             <div class="col-md-6" id="total">R$ @total</div>
+        </div>
+        <br />
+        <br />
+        <div class="row">
+            <div class="col-md-12">
+                <a asp-action="" class="btn btn-success btn-block"><span class="glyphicon glyphicon-check"></span> Finalizar Compra</a>
+            </div>
         </div>
     </div>
 </div>

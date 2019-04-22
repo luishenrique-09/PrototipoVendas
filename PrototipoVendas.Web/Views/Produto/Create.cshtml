@@ -1,10 +1,10 @@
 ﻿@model ProdutoViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "ProtótipoVendas - Cadastro Produto";
 }
 
-<h2>Create</h2>
+<h2>Cadastro</h2>
 
 <h4>Produto</h4>
 <hr />
@@ -24,57 +24,31 @@
             </div>
             <div class="form-group">
                 <label asp-for="Preco" class="control-label"></label>
-                <input asp-for="Preco" class="form-control" />
+                <input asp-for="Preco" class="form-control" id="preco" />
                 <span asp-validation-for="Preco" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImageUpload" class="control-label"></label>
+                <label asp-for="Foto" class="control-label"></label>
                 <input type="file" id="file" asp-for="ImageUpload" class="form-control" />
                 <span asp-validation-for="ImageUpload" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" id="btnCreate" value="Create" class="btn btn-default" />
+                <input type="submit" id="btnCreate" value="Salvar" class="btn btn-default" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Listar</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-	@*<script type="text/javascript">
-		$(document).ready(function () {
-			$('#btnCreate').on('click', function () {
-				var fd = new FormData();
-				var files = $('#file')[0].files[0];
-
-				console.log(files);
-
-				fd.append('Foto', files);
-				fd.append('Nome', 'Teste');
-				fd.append('Descricao', 'Teste');
-				fd.append('Preco', '20');
-
-				$.ajax({
-					url: 'Create',
-					type: 'post',
-					data: fd,
-					contentType: false,
-					processData: false,
-					success: function (response) {
-						if (response != 0) {
-							$("#img").attr("src", response);
-							$(".preview img").show(); // Display image element
-						} else {
-							alert('file not uploaded');
-						}
-					},
-				});
-			});
-		});
-	</script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#preco').mask('000.000.000.000.000,00', { reverse: true });
+        });
+    </script>
 }

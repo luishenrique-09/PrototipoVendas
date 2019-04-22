@@ -16,7 +16,7 @@
         public String Descricao { get; set; }
 
         [Required(ErrorMessage = "Informe o preço do produto", AllowEmptyStrings = false)]
-        public Decimal Preco { get; set; }
+        public string Preco { get; set; }
         
         [DataType(DataType.Upload)]
         public IFormFile ImageUpload { get; set; }

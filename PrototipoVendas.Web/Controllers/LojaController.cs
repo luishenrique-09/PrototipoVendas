@@ -32,7 +32,7 @@
                     Id = prod.Id,
                     Nome = prod.Nome,
                     Descricao = prod.Descricao,
-                    Preco = prod.Preco,
+                    Preco = prod.Preco.ToString(),
                     Foto = ToBase64ImageString(prod.Foto)
                 });
             }
@@ -60,7 +60,7 @@
                 Id = produto.Id,
                 Nome = produto.Nome,
                 Descricao = produto.Descricao,
-                Preco = produto.Preco,
+                Preco = produto.Preco.ToString(),
                 Foto = ToBase64ImageString(produto.Foto)
             };
 
@@ -90,7 +90,7 @@
                 Id = produtoBD.Id,
                 Nome = produtoBD.Nome,
                 Descricao = produtoBD.Descricao,
-                Preco = produtoBD.Preco,
+                Preco = produtoBD.Preco.ToString(),
                 Foto = ToBase64ImageString(produtoBD.Foto)
             };
 

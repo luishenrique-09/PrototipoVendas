@@ -46,7 +46,7 @@
                 Id = produto.Id,
                 Nome = produto.Nome,
                 Descricao = produto.Descricao,
-                Preco = produto.Preco,
+                Preco = produto.Preco.ToString(),
                 Foto = ToBase64ImageString(produto.Foto)
             };
 
@@ -76,7 +76,7 @@
                 var produto = new Produto {
                     Nome = model.Nome,
                     Descricao = model.Descricao,
-                    Preco = model.Preco
+                    Preco = Convert.ToDecimal(model.Preco)
                 };
 
                 MemoryStream ms = new MemoryStream();
@@ -110,7 +110,7 @@
                 Id = produto.Id,
                 Nome = produto.Nome,
                 Descricao = produto.Descricao,
-                Preco = produto.Preco,
+                Preco = produto.Preco.ToString(),
                 Foto = ToBase64ImageString(produto.Foto)
             };
 
@@ -137,7 +137,7 @@
                     var produto = _context.Produtos.FirstOrDefault(x => x.Id == model.Id);
                     produto.Nome = model.Nome;
                     produto.Descricao = model.Descricao;
-                    produto.Preco = model.Preco;
+                    produto.Preco = Convert.ToDecimal(model.Preco);
 
                     _context.Update(produto);
                     await _context.SaveChangesAsync();
@@ -178,7 +178,7 @@
                 Id = produto.Id,
                 Nome = produto.Nome,
                 Descricao = produto.Descricao,
-                Preco = produto.Preco,
+                Preco = produto.Preco.ToString(),
                 Foto = ToBase64ImageString(produto.Foto)
             };
 

@@ -1,10 +1,10 @@
 ﻿@model ProdutoViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "ProtótipoVendas - Editar Usuário";
 }
 
-<h2>Edit</h2>
+<h2>Editar</h2>
 
 <h4>Produto</h4>
 <hr />
@@ -25,7 +25,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Preco" class="control-label"></label>
-                <input asp-for="Preco" class="form-control" />
+                <input asp-for="Preco" class="form-control" id="preco" />
                 <span asp-validation-for="Preco" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -36,16 +36,22 @@
                 @*<input asp-for="ArrayImagem" hidden="hidden" />*@
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Salvar" class="btn btn-default" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Listar</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#preco').mask('000.000.000.000.000,00', { reverse: true });
+        });
+    </script>
 }
